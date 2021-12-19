@@ -9,7 +9,7 @@
   <p class="player" :class="{selected: player === -1}">O</p>
 </div>
 
-<button class="reset" @click="$emit('reset')">RESET</button>
+<button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
 
 </template>
 
@@ -28,7 +28,8 @@ export default {
       ],
       player: 1,
       check: 0,
-      moves: 0    
+      moves: 0,
+      isPlaying: true
     }
   },
   methods: {
@@ -98,6 +99,7 @@ export default {
       }
     },
     showWinner(result) {
+      this.isPlaying = false;
       if (result === 3) {
         result = "X";
       } else if (result === -3) {
@@ -120,7 +122,7 @@ export default {
   padding: 0;
   font-size: 6rem;
   color: transparent;
-  border: 2px solid #363636;
+  border: 4px solid #363636;
   background-color: #41B883;
 }
 .buttonBoard_hover:hover,
@@ -134,7 +136,7 @@ export default {
   color: #363636;
   border-radius: 25px;
   font-size: 1.2em;
-  padding: 5px;
+  padding: 10px;
   border: transparent;
 }
 .player {

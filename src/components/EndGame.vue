@@ -2,7 +2,7 @@
   <div class="popup">
       <div v-if="result"> The Winner is <h1>{{ result }}</h1></div>
       <div v-else>It's a draw!</div>
-      <button class="reset size" @click="$emit('reset')">RESET</button>
+      <button class="reset size" @click="$emit('reset')">PLAY AGAIN</button>
   </div>
 </template>
 

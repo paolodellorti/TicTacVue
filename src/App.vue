@@ -1,7 +1,10 @@
 <template>
 <Header />
 <Board :key="forceKey" @reset="forceupdate" @endGame="endGame"/>
-<EndGame v-show="!isPlaying" :result="result" @reset="forceupdate"/>
+  <transition name="fade">
+    <EndGame v-show="isEnded" :result="result" @reset="forceupdate"/>
+  </transition>
+
 
 </template>
 
@@ -21,17 +24,17 @@ export default {
     return {
       forceKey: 0,
       result: "",
-      isPlaying: true
+      isEnded: false
     }
   },
   methods: {
     forceupdate() {
-      this.isPlaying = true;
+      this.isEnded = false;
       this.forceKey++;
     },
     endGame(result) {
       this.result = result;
-      this.isPlaying = false;
+      this.isEnded = true;
     }
   }
 }
@@ -60,5 +63,11 @@ body {
       -ms-user-select: none;
           user-select: none;
   min-width: 600px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
