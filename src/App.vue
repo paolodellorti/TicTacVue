@@ -1,26 +1,37 @@
 <template>
-  <MyTitle />
-  <Board class="myboard" :key="forceKey" @forceUpdate="forceupdate"/>
+<Header />
+<Board :key="forceKey" @reset="forceupdate" @endGame="endGame"/>
+<EndGame v-if="!isPlaying" :result="result" @reset="forceupdate"/>
+
 </template>
 
 <script>
+import Header from './components/Header.vue';
 import Board from './components/Board.vue';
-import MyTitle from './components/MyTitle.vue'
+import EndGame from './components/EndGame.vue';
 
 export default {
   name: 'App',
   components: {
+    Header,
     Board,
-    MyTitle
+    EndGame
   },
   data() {
     return {
-      forceKey: 0
+      forceKey: 0,
+      result: "",
+      isPlaying: true
     }
   },
   methods: {
     forceupdate() {
+      this.isPlaying = true;
       this.forceKey++;
+    },
+    endGame(result) {
+      this.result = result;
+      this.isPlaying = false;
     }
   }
 }
@@ -34,7 +45,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   font-family: 'Oswald', sans-serif;
 }
 img {
@@ -49,5 +59,6 @@ body {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  min-width: 600px;
 }
 </style>

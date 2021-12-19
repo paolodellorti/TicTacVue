@@ -3,14 +3,13 @@
   <p class="player" :class="{selected: player === 1}">X</p>
   <div>
   <div v-for="x in 3" :key="x" :class="`x${x}`">
-    <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showSymbol(x, y) }}</button>
+    <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showPlayers(x, y) }}</button>
   </div>
   </div>
   <p class="player" :class="{selected: player === -1}">O</p>
 </div>
 
-<button class="reset" @click="forceUpdate">RESET</button>
-
+<button class="reset" @click="$emit('reset')">RESET</button>
 
 </template>
 
@@ -19,7 +18,7 @@ import _ from 'lodash';
 
 export default {
   name: 'Board',
-  emits: ["forceUpdate"],
+  emits: ["reset", "endGame"],
   data() {
     return {
       board: [
@@ -28,70 +27,85 @@ export default {
         [0, 0, 0]
       ],
       player: 1,
-      check: 0
+      check: 0,
+      moves: 0    
     }
   },
   methods: {
     toggle(x, y) {
       if (this.board[x-1][y-1] === 0 ) {
-        event.target.style.color = "#35495E";
+        event.target.style.color = "#363636";
         event.target.classList.remove("buttonBoard_hover");
         this.board[x-1][y-1] += this.player;
-        this.checkWinner();
+        this.moves++;
+        if (this.moves > 4) {
+          this.checkWinner(this.moves);
+        }
         this.player = this.player === 1 ? -1 : 1;
       }
     },
-    showSymbol(x, y) {
+    showPlayers(x, y) {
       if (this.board[x - 1][y - 1] === 1) {
-        return "X"
+        return "X";
       } else if (this.board[x - 1][y - 1] === -1){
-        return "O"
+        return "O";
       } else {
-        return "."
+        return ".";
       }
     },
-    checkWinner() {
+    checkWinner(moves) {
       //horizontal win
       for (let x = 0; x < 3; x++) {
         this.check = _.sum(this.board[x]);
         if (this.check === 3 || this.check === -3) {
-          return this.showWinner();
+          return this.showWinner(this.check);
         }
       }
       this.check = 0;
+
       //vertical win
       for (let y = 0; y < 3; y++) {
         for (let x = 0; x < 3; x++) {
           this.check += this.board[x][y]
           if (this.check === 3 || this.check === -3) {
-            return this.showWinner();
+            return this.showWinner(this.check);
           }
         }
         this.check = 0;
       }
-      this.check = 0;
+
       //diagonal from R to L win
-      this.check = this.board[0][2] + this.board[1][1] + this.board[2][0]
-      if (this.check === 3 || this.check === -3) {
-        return this.showWinner();
+      for(let i = 0, z = 2; i < 3; i++, z--){
+        this.check += this.board[i][z];
+        if (this.check === 3 || this.check === -3) {
+          return this.showWinner(this.check);
+        }
       }
       this.check = 0;
+
       //diagonal from L to R win
       for (let i = 0; i < 3; i++) {
         this.check += this.board[i][i]
         if (this.check === 3 || this.check === -3) {
-          return this.showWinner();
+          return this.showWinner(this.check);
         }
       }
       this.check = 0;
+
+      //if last move, end with a draw
+      if (moves === 9) {
+        return this.showWinner(0);
+      }
     },
-    showWinner() {
-      this.forceUpdate();
-      console.log("hai vinto!!");
-    },
-    forceUpdate() {
-      console.log("e forzati dio cannnn");
-      this.$emit("forceUpdate");
+    showWinner(result) {
+      if (result === 3) {
+        result = "X";
+      } else if (result === -3) {
+        result = "O";
+      } else {
+        result = 0;
+      }
+      this.$emit("endGame", result);
     }
   }
 }
@@ -104,20 +118,20 @@ export default {
   height: 150px;
   margin: 0;
   padding: 0;
-  font-size: 5rem;
+  font-size: 6rem;
   color: transparent;
-  border: 2px solid #35495E;
+  border: 2px solid #363636;
   background-color: #41B883;
 }
 .buttonBoard_hover:hover,
 .reset:hover {
-  background-color: rgba(65,184,131,0.7);
+  background-color: #369b6e;
 }
 .reset {
   font-family: 'Oswald', sans-serif;
   min-width: 10%;
   background-color: #41B883;
-  color: #35495E;
+  color: #363636;
   border-radius: 25px;
   font-size: 1.2em;
   padding: 5px;
@@ -127,12 +141,12 @@ export default {
   font-size: 3em;
   width: 10%;
   border-radius: 25px;
-  color: #41B883;
+  color: #363636;
   background-color:#35495E;
 }
 .selected {
   background-color: #41B883;
-  color: #35495E;
+  color: #363636;
 }
 .controller {
   display: flex;
@@ -145,6 +159,7 @@ export default {
 .x1 > .y1 {
   border-top: transparent;
   border-left: transparent;
+  border-top-left-radius: 45px;
 }
 .x1 > .y2 {
   border-top: transparent;
@@ -152,6 +167,7 @@ export default {
 .x1 > .y3 {
   border-top: transparent;
   border-right: transparent;
+  border-top-right-radius: 45px;
 }
 .x2 > .y1 {
   border-left: transparent;
@@ -162,6 +178,7 @@ export default {
 .x3 > .y1 {
   border-bottom: transparent;
   border-left: transparent;
+  border-bottom-left-radius: 45px;
 }
 .x3 > .y2 {
   border-bottom: transparent;
@@ -169,5 +186,6 @@ export default {
 .x3 > .y3 {
   border-bottom: transparent;
   border-right: transparent;
+  border-bottom-right-radius: 45px;
 }
 </style>

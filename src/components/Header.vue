@@ -1,13 +1,13 @@
 <template>
     <div class="title">
     <img alt="Vue logo" src="../assets/logo.png"> 
-    <h1>Tic-Tac-Vue </h1>
+    <h1>Tic-Tac-Vue</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "MyTitle"
+  name: "Header"
 }
 </script>
 
