@@ -1,7 +1,7 @@
 <template>
 <Header />
 <Board :key="forceKey" @reset="forceupdate" @endGame="endGame"/>
-<EndGame v-if="!isPlaying" :result="result" @reset="forceupdate"/>
+<EndGame v-show="!isPlaying" :result="result" @reset="forceupdate"/>
 
 </template>
 
