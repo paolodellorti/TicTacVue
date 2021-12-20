@@ -1,4 +1,4 @@
-# tictactoe-vue
+# TicTacVue
 
 ## Project setup
 ```
