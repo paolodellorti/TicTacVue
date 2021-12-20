@@ -18,7 +18,11 @@ import _ from 'lodash';
 
 export default {
   name: 'Board',
-  emits: ["reset", "endGame"],
+  emits: [
+    "reset", 
+    "endGame", 
+    "changePlayer"
+  ],
   data() {
     return {
       board: [
@@ -97,6 +101,7 @@ export default {
       if (moves === 9) {
         return this.showWinner(0);
       }
+      this.$emit("changePlayer", this.player);
     },
     showWinner(result) {
       this.isPlaying = false;
@@ -107,6 +112,7 @@ export default {
       } else {
         result = 0;
       }
+      this.$emit("changePlayer", 0)
       this.$emit("endGame", result);
     }
   }
