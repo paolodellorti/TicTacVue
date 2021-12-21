@@ -1,50 +1,38 @@
 <template>
-<Header />
-<Board :key="forceKey" @changePlayer="changeCursor" @reset="forceupdate" @endGame="endGame"/>
-  <transition name="fade">
-    <EndGame v-show="isEnded" :result="result" @reset="forceupdate"/>
-  </transition>
-<Cursor :player="player" :key="player"/>
-
+  <Header />
+  <Board :key="forceKey" @reset="forceupdate" @endGame="endGame" />
+    <transition name="fade">
+      <EndGame v-show="isEnded" :result="result" @reset="forceupdate" />
+    </transition>
 </template>
 
 <script>
 import Header from './components/Header.vue';
 import Board from './components/Board.vue';
 import EndGame from './components/EndGame.vue';
-import Cursor from './components/Cursor.vue';
 
 export default {
   name: 'App',
   components: {
     Header,
     Board,
-    EndGame,
-    Cursor
+    EndGame
   },
   data() {
     return {
       forceKey: 0,
       result: "",
-      isEnded: false,
-      player: 1
+      isEnded: false
     }
   },
   methods: {
     forceupdate() {
       this.isEnded = false;
       this.forceKey++;
-      this.player = 1;
     },
     endGame(result) {
       this.result = result;
       this.isEnded = true;
-      this.player = 0;
-    },
-    changeCursor(player) {
-      console.log(player);
-      this.player = player;
-      console.log(this.player);
     }
   }
 }
@@ -54,7 +42,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
 
 * {
-  /* cursor: none; */
+  cursor: none;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

@@ -1,15 +1,19 @@
 <template>
-<div class="controller">
-  <p class="player" :class="{selected: player === 1}">X</p>
-  <div>
-  <div v-for="x in 3" :key="x" :class="`x${x}`">
-    <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showPlayers(x, y) }}</button>
+  <div class="controller">
+    <p class="player" :class="{selected: player === 1}">X</p>
+    <div>
+    <div v-for="x in 3" :key="x" :class="`x${x}`">
+      <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showPlayers(x, y) }}</button>
+    </div>
+    </div>
+    <p class="player" :class="{selected: player === -1}">O</p>
   </div>
-  </div>
-  <p class="player" :class="{selected: player === -1}">O</p>
-</div>
 
-<button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
+  <button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
+
+  <div class="cursors">
+    {{ playerComputed }}
+  </div>
 
 </template>
 
@@ -20,8 +24,7 @@ export default {
   name: 'Board',
   emits: [
     "reset", 
-    "endGame", 
-    "changePlayer"
+    "endGame" 
   ],
   data() {
     return {
@@ -31,7 +34,6 @@ export default {
         [0, 0, 0]
       ],
       player: 1,
-      check: 0,
       moves: 0,
       isPlaying: true
     }
@@ -46,74 +48,75 @@ export default {
         if (this.moves > 4) {
           this.checkWinner(this.moves);
         }
-        this.player = this.player === 1 ? -1 : 1;
+        this.player = this.player === -1 ? 1 : -1;
       }
     },
     showPlayers(x, y) {
-      if (this.board[x - 1][y - 1] === 1) {
-        return "X";
-      } else if (this.board[x - 1][y - 1] === -1){
-        return "O";
-      } else {
-        return ".";
-      }
+      let box = this.board[x - 1][y - 1];
+      return box === 1 ? "X"
+           : box === -1 ? "O"
+           : "."
     },
     checkWinner(moves) {
       //horizontal win
-      for (let x = 0; x < 3; x++) {
-        this.check = _.sum(this.board[x]);
-        if (this.check === 3 || this.check === -3) {
-          return this.showWinner(this.check);
+      for (let x = 0, check = 0; x < 3; x++) {
+        check = _.sum(this.board[x]);
+        if (check === 3 || check === -3) {
+          return this.showWinner(check);
         }
       }
-      this.check = 0;
 
       //vertical win
       for (let y = 0; y < 3; y++) {
-        for (let x = 0; x < 3; x++) {
-          this.check += this.board[x][y]
-          if (this.check === 3 || this.check === -3) {
-            return this.showWinner(this.check);
+        for (let x = 0, check = 0; x < 3; x++) {
+          check += this.board[x][y]
+          if (check === 3 || check === -3) {
+            return this.showWinner(check);
           }
         }
-        this.check = 0;
       }
 
       //diagonal from R to L win
-      for(let i = 0, z = 2; i < 3; i++, z--){
-        this.check += this.board[i][z];
-        if (this.check === 3 || this.check === -3) {
-          return this.showWinner(this.check);
+      for(let i = 0, z = 2, check = 0; i < 3; i++, z--){
+        check += this.board[i][z];
+        if (check === 3 || check === -3) {
+          return this.showWinner(check);
         }
       }
-      this.check = 0;
 
       //diagonal from L to R win
-      for (let i = 0; i < 3; i++) {
-        this.check += this.board[i][i]
-        if (this.check === 3 || this.check === -3) {
-          return this.showWinner(this.check);
+      for (let i = 0, check = 0; i < 3; i++) {
+        check += this.board[i][i]
+        if (check === 3 || check === -3) {
+          return this.showWinner(check);
         }
       }
-      this.check = 0;
 
       //if last move, end with a draw
       if (moves === 9) {
         return this.showWinner(0);
       }
-      this.$emit("changePlayer", this.player);
     },
     showWinner(result) {
       this.isPlaying = false;
-      if (result === 3) {
-        result = "X";
-      } else if (result === -3) {
-        result = "O";
-      } else {
-        result = 0;
-      }
-      this.$emit("changePlayer", 0)
+      result = result === 3 ? "X"
+             : result === -3 ? "O"
+             : 0;
       this.$emit("endGame", result);
+    }
+  },
+  mounted() {
+    let cursor = document.querySelector(".cursors");
+    document.addEventListener("mousemove", function(event) {
+      cursor.style.left = event.pageX + "px";
+      cursor.style.top = event.pageY + "px";
+    })
+  },
+  computed: {
+    playerComputed() {
+      return this.player === 1 ? "X" 
+           : this.player === -1 ? "O" 
+           : "."
     }
   }
 }
@@ -134,6 +137,7 @@ export default {
 .buttonBoard_hover:hover,
 .reset:hover {
   background-color: #369b6e;
+  transition: all 0.3s;
 }
 .reset {
   font-family: 'Oswald', sans-serif;
@@ -161,6 +165,14 @@ export default {
   justify-content: space-around;
   align-items: center;
   margin: 30px auto;
+}
+.cursors {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  opacity: 0.7;
+  font-size: 6rem;
 }
 
 /* style personalizzato per ogni cella */
