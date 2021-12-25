@@ -1,12 +1,12 @@
 <template>
   <div class="controller">
-    <p class="player" :class="{selected: player === 1}">X</p>
+    <p class="player" :class="{selected: player === 1, notSelected: player === -1}">X</p>
     <div>
     <div v-for="x in 3" :key="x" :class="`x${x}`">
       <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showPlayers(x, y) }}</button>
     </div>
     </div>
-    <p class="player" :class="{selected: player === -1}">O</p>
+    <p class="player" :class="{selected: player === -1, notSelected: player === 1}">O</p>
   </div>
 
   <button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
@@ -133,6 +133,7 @@ export default {
   color: transparent;
   border: 4px solid #363636;
   background-color: #41B883;
+  transition: all 0.3s;
 }
 .buttonBoard_hover:hover,
 .reset:hover {
@@ -154,11 +155,14 @@ export default {
   width: 10%;
   border-radius: 25px;
   color: #363636;
+}
+.notSelected {
   background-color:#35495E;
+  transition: all 0.4s;
 }
 .selected {
   background-color: #41B883;
-  color: #363636;
+  transition: all 0.4s;
 }
 .controller {
   display: flex;
