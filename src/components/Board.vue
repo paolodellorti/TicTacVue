@@ -1,12 +1,15 @@
 <template>
   <div class="controller">
-    <p class="player" :class="{selected: player === 1, notSelected: player === -1}">X</p>
+    <p class="player" :class="{selected: player === 1}">X</p>
     <div>
     <div v-for="x in 3" :key="x" :class="`x${x}`">
-      <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">{{ showPlayers(x, y) }}</button>
+      <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">
+        {{ showPlayers(x, y) }}
+        <span @mouseover="showPreview(x, y)" @mouseout="deletePreview(x, y)"> {{ preview }}  </span>
+      </button>
     </div>
     </div>
-    <p class="player" :class="{selected: player === -1, notSelected: player === 1}">O</p>
+    <p class="player" :class="{selected: player === -1}">O</p>
   </div>
 
   <button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
@@ -35,7 +38,8 @@ export default {
       ],
       player: 1,
       moves: 0,
-      isPlaying: true
+      isPlaying: true,
+      preview: ""
     }
   },
   methods: {
@@ -56,6 +60,11 @@ export default {
       return box === 1 ? "X"
            : box === -1 ? "O"
            : "."
+    },
+    showPreview(x, y) {
+      if (this.board[x - 1][y - 1] === 0) {
+        return this.preview === 1 ? "X": "O"    
+      }  
     },
     checkWinner(moves) {
       //horizontal win
@@ -149,20 +158,19 @@ export default {
   font-size: 1.2em;
   padding: 10px;
   border: transparent;
+  transition: all 0.3s;
 }
 .player {
   font-size: 3em;
   width: 10%;
   border-radius: 25px;
   color: #363636;
-}
-.notSelected {
   background-color:#35495E;
-  transition: all 0.4s;
+  transition: all 0.3s;
 }
 .selected {
   background-color: #41B883;
-  transition: all 0.4s;
+  transition: all 0.3s;
 }
 .controller {
   display: flex;
