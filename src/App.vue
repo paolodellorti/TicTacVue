@@ -1,9 +1,9 @@
 <template>
   <Header />
   <Board :key="forceKey" @reset="forceupdate" @endGame="endGame" />
-    <transition name="fade">
-      <EndGame :result="result" @reset="forceupdate" v-if="isEnded" />
-    </transition>
+  <transition name="fade">
+    <EndGame :result="result" @reset="forceupdate" v-if="isEnded" />
+  </transition>
 </template>
 
 <script>
