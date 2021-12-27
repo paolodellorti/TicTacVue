@@ -74,17 +74,17 @@ export default {
         }
       }
 
-      //diagonal from R to L win
-      for(let i = 0, z = 2, check = 0; i < 3; i++, z--){
-        check += this.board[i][z];
+      //diagonal from L to R win
+      for (let i = 0, check = 0; i < 3; i++) {
+        check += this.board[i][i]
         if (check === 3 || check === -3) {
           return this.showWinner(check);
         }
       }
-
-      //diagonal from L to R win
-      for (let i = 0, check = 0; i < 3; i++) {
-        check += this.board[i][i]
+      
+      //diagonal from R to L win
+      for(let i = 0, z = 2, check = 0; i < 3; i++, z--){
+        check += this.board[i][z];
         if (check === 3 || check === -3) {
           return this.showWinner(check);
         }
