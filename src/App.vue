@@ -2,7 +2,7 @@
   <Header />
   <Board :key="forceKey" @reset="forceupdate" @endGame="endGame" />
     <transition name="fade">
-      <EndGame v-show="isEnded" :result="result" @reset="forceupdate" />
+      <EndGame :result="result" @reset="forceupdate" v-if="isEnded" />
     </transition>
 </template>
 
@@ -41,9 +41,6 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
 
-* {
-  cursor: none;
-}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,7 +52,6 @@ img {
   width: 5%;
 }
 body {
-  overflow-y: hidden;
   background-color: #363636;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

@@ -2,21 +2,16 @@
   <div class="controller">
     <p class="player" :class="{selected: player === 1}">X</p>
     <div>
-    <div v-for="x in 3" :key="x" :class="`x${x}`">
-      <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">
-        {{ showPlayers(x, y) }}
-        <span @mouseover="showPreview(x, y)" @mouseout="deletePreview(x, y)"> {{ preview }}  </span>
-      </button>
-    </div>
+      <div v-for="x in 3" :key="x" :class="`x${x}`">
+        <button class="buttonBoard buttonBoard_hover" v-for="y in 3" :key="y" @click="toggle(x,y)" :class="`y${y}`">
+          {{ showPlayers(x, y) }}
+        </button>
+      </div>
     </div>
     <p class="player" :class="{selected: player === -1}">O</p>
   </div>
 
   <button v-show="isPlaying" class="reset" @click="$emit('reset')">RESTART</button>
-
-  <div class="cursors">
-    {{ playerComputed }}
-  </div>
 
 </template>
 
@@ -38,8 +33,7 @@ export default {
       ],
       player: 1,
       moves: 0,
-      isPlaying: true,
-      preview: ""
+      isPlaying: true
     }
   },
   methods: {
@@ -60,11 +54,6 @@ export default {
       return box === 1 ? "X"
            : box === -1 ? "O"
            : "."
-    },
-    showPreview(x, y) {
-      if (this.board[x - 1][y - 1] === 0) {
-        return this.preview === 1 ? "X": "O"    
-      }  
     },
     checkWinner(moves) {
       //horizontal win
@@ -112,20 +101,6 @@ export default {
              : result === -3 ? "O"
              : 0;
       this.$emit("endGame", result);
-    }
-  },
-  mounted() {
-    let cursor = document.querySelector(".cursors");
-    document.addEventListener("mousemove", function(event) {
-      cursor.style.left = event.pageX + "px";
-      cursor.style.top = event.pageY + "px";
-    })
-  },
-  computed: {
-    playerComputed() {
-      return this.player === 1 ? "X" 
-           : this.player === -1 ? "O" 
-           : "."
     }
   }
 }
