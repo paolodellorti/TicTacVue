@@ -1,6 +1,6 @@
 # TicTacVue
 
-
+![Immagine](https://user-images.githubusercontent.com/84512004/147496515-a27a834b-4c05-4a14-bb13-6f6546b21e11.png)
 
 ## Project setup
 ```
