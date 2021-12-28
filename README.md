@@ -1,4 +1,4 @@
-# TicTacVue
+# Tic Tac Vue
 
 This is a project for the Vue.js module of [start2impact](https://www.start2impact.it/) web development course.
 <br>
